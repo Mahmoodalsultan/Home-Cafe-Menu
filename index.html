@@ -3,200 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Café Menu</title>
+    <title>Café Péra - Home Bar</title>
     <style>
+        /* La Specialista Maestro Inspired Theme */
         :root {
-            --bg-color: #fdfbf7;
-            --text-main: #2b1b11;
-            --accent: #c48b5d;
-            --metal: #8e8e8e;
+            --bg-dark: #121212; /* Deep black chassis */
+            --bg-panel: #1e1e1e;
+            --text-main: #f0f0f0;
+            --steel: #b0b5b9; /* Brushed stainless steel */
+            --accent-red: #d32f2f; /* Indicator light red */
+            --gauge-blue: #4fc3f7; /* Cold extraction indicator */
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
             color: var(--text-main);
-            display: flex;
-            justify-content: center;
             min-height: 100vh;
-        }
-
-        .menu-container {
-            width: 100%;
-            max-width: 600px;
-            padding: 2rem;
-            box-sizing: border-box;
         }
 
         header {
             text-align: center;
-            margin-bottom: 3rem;
-            animation: fadeInDown 1s ease-out;
+            padding: 3rem 1rem 2rem;
+            border-bottom: 1px solid #333;
+            background: linear-gradient(180deg, #1a1a1a 0%, var(--bg-dark) 100%);
         }
 
         h1 {
             font-size: 2.5rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 0 0 0.5rem 0;
+            color: var(--steel);
+            font-weight: 300;
+        }
+
+        .subtitle {
+            color: var(--accent-red);
+            font-size: 0.9rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 0.5rem;
         }
 
-        .divider {
-            height: 2px;
-            width: 50px;
-            background-color: var(--accent);
+        main {
+            max-width: 1200px;
             margin: 0 auto;
-        }
-
-        .category {
-            margin-bottom: 2.5rem;
+            padding: 2rem;
         }
 
         h2 {
             font-size: 1.5rem;
-            color: var(--metal);
-            border-bottom: 1px solid #e0dcd3;
+            color: var(--steel);
+            border-bottom: 2px solid #333;
             padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-            animation: fadeIn 1.2s ease-out;
-        }
-
-        .menu-item {
+            margin: 2.5rem 0 1.5rem 0;
             display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 1rem;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUpFade 0.6s ease-out forwards;
+            align-items: center;
+            gap: 10px;
         }
 
-        .menu-item:hover {
-            color: var(--accent);
-            transform: translateX(5px);
-            transition: all 0.3s ease;
+        .cold-title {
+            color: var(--gauge-blue);
         }
 
-        .item-name {
+        /* Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .drink-card {
+            background-color: var(--bg-panel);
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .drink-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--steel);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Image Placeholder in Grid */
+        .drink-img-thumb {
+            width: 100%;
+            height: 150px;
+            background-color: #2a2a2a; /* Placeholder color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 0.8rem;
+            object-fit: cover;
+        }
+
+        .drink-info {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .drink-name {
             font-weight: 600;
             font-size: 1.1rem;
+            margin: 0;
         }
 
-        .item-dots {
-            flex-grow: 1;
-            border-bottom: 2px dotted #d1ccc0;
-            margin: 0 10px;
+        /* Modal (Popup) Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background-color: var(--bg-panel);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--steel);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
             position: relative;
-            top: -6px;
         }
 
-        /* Motion Graphics / Keyframe Animations */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: var(--steel);
+            cursor: pointer;
+            background: none;
+            border: none;
         }
 
-        @keyframes slideUpFade {
-            to { opacity: 1; transform: translateY(0); }
+        .close-btn:hover {
+            color: var(--accent-red);
         }
 
-        /* Staggered animation delays for list items */
-        .hot-drinks .menu-item:nth-child(2) { animation-delay: 0.1s; }
-        .hot-drinks .menu-item:nth-child(3) { animation-delay: 0.2s; }
-        .hot-drinks .menu-item:nth-child(4) { animation-delay: 0.3s; }
-        .hot-drinks .menu-item:nth-child(5) { animation-delay: 0.4s; }
-        .hot-drinks .menu-item:nth-child(6) { animation-delay: 0.5s; }
-        .hot-drinks .menu-item:nth-child(7) { animation-delay: 0.6s; }
-        .hot-drinks .menu-item:nth-child(8) { animation-delay: 0.7s; }
-        .hot-drinks .menu-item:nth-child(9) { animation-delay: 0.8s; }
-        .hot-drinks .menu-item:nth-child(10) { animation-delay: 0.9s; }
-        .hot-drinks .menu-item:nth-child(11) { animation-delay: 1.0s; }
-        .hot-drinks .menu-item:nth-child(12) { animation-delay: 1.1s; }
+        .modal-img {
+            width: 100%;
+            height: 300px;
+            background-color: #2a2a2a; /* Placeholder */
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            object-fit: cover;
+        }
 
-        .cold-drinks .menu-item:nth-child(2) { animation-delay: 0.6s; }
-        .cold-drinks .menu-item:nth-child(3) { animation-delay: 0.7s; }
-        .cold-drinks .menu-item:nth-child(4) { animation-delay: 0.8s; }
+        #modal-title {
+            font-size: 2rem;
+            margin: 0 0 1rem 0;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="menu-container">
-        <header>
-            <h1>Café Reserve</h1>
-            <div class="divider"></div>
-        </header>
+    <header>
+        <h1>Café Péra</h1>
+        <div class="subtitle">Home Bar Menu</div>
+    </header>
 
-        <section class="category hot-drinks">
-            <h2>Hot Drinks</h2>
-            <div class="menu-item">
-                <span class="item-name">Espresso (Single / Double)</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">Americano</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">Coffee</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">Flat White</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">Latte Macchiato</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">Cappuccino</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">Turkish Coffee</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">French Coffee</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">Greek Coffee</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">Café Péra Blend</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">Arabic Coffee</span>
-                <span class="item-dots"></span>
-            </div>
-        </section>
+    <main>
+        <h2><span style="color:var(--accent-red)">●</span> Hot Extraction</h2>
+        <div class="grid-container" id="hot-drinks">
+            <!-- JavaScript will populate this -->
+        </div>
 
-        <section class="category cold-drinks">
-            <h2>Cold Drinks</h2>
-            <div class="menu-item">
-                <span class="item-name">Espresso Cold</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">Cold Brew</span>
-                <span class="item-dots"></span>
-            </div>
-            <div class="menu-item">
-                <span class="item-name">Desert Velvet Iced</span>
-                <span class="item-dots"></span>
-            </div>
-        </section>
+        <h2 class="cold-title"><span>❄</span> Cold Extraction</h2>
+        <div class="grid-container" id="cold-drinks">
+            <!-- JavaScript will populate this -->
+        </div>
+    </main>
+
+    <!-- Modal Popup for Drink Details -->
+    <div class="modal-overlay" id="drink-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <img class="modal-img" id="modal-img" src="" alt="Drink Photo" style="display: none;">
+            <div class="modal-img" id="modal-placeholder">Photo Placeholder</div>
+            <h3 id="modal-title">Drink Name</h3>
+        </div>
     </div>
 
+    <script>
+        // Data for your menu
+        const menuData = {
+            hot: [
+                { name: "Espresso (Single / Double)" },
+                { name: "Americano" },
+                { name: "Coffee" },
+                { name: "Flat White" },
+                { name: "Latte Macchiato" },
+                { name: "Cappuccino" },
+                { name: "Turkish Coffee" },
+                { name: "French Coffee" },
+                { name: "Greek Coffee" },
+                { name: "Café Péra Blend" },
+                { name: "Arabic Coffee" }
+            ],
+            cold: [
+                { name: "Espresso Cold" },
+                { name: "Cold Brew" },
+                { name: "Desert Velvet Iced" }
+            ]
+        };
+
+        // Function to create a card HTML string
+        function createCard(drink) {
+            return `
+                <div class="drink-card" onclick="openModal('${drink.name}')">
+                    <div class="drink-img-thumb">Add Photo</div>
+                    <div class="drink-info">
+                        <p class="drink-name">${drink.name}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render the grids
+        document.getElementById('hot-drinks').innerHTML = menuData.hot.map(createCard).join('');
+        document.getElementById('cold-drinks').innerHTML = menuData.cold.map(createCard).join('');
+
+        // Modal Logic
+        const modal = document.getElementById('drink-modal');
+        const modalTitle = document.getElementById('modal-title');
+
+        function openModal(drinkName) {
+            modalTitle.innerText = drinkName;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // Close modal if clicking outside the content box
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
